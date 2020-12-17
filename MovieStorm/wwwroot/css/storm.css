@@ -1,0 +1,48 @@
+﻿body {
+    font-family: sans-serif;
+    height: 100%;
+    background-color: black;
+}
+
+.navbar-text {
+    font-weight: bold;
+}
+
+.navbar li {
+    padding: 0 10px;
+}
+
+.nav-item a {
+    text-decoration: none;
+    color: white;
+}
+
+.navbar span {
+    font-size: 25px;
+}
+
+.nav-item a:hover {
+    color: dodgerblue;
+    border-bottom: 2px solid orange;
+}
+
+.page-footer {
+    background: linear-gradient(to bottom, #003300 0%, #cc6699 100%);
+    color: white;
+}
+
+.col a {
+    text-align: center;
+}
+.dropdown-menu {
+    background-color: black;
+}
+
+
+.dropdown-item:hover {
+    color: dodgerblue;
+}
+
+.space {
+    padding-bottom: 50px;
+}
