@@ -14,15 +14,11 @@ namespace MovieStorm.Controllers
 {
     public class AccountController : Controller
     {
-        private StormContext db;
-        private CryptoService crypt;
-        private readonly IConfiguration Configuration;
+        private AccountService settings;
 
-        public AccountController(IConfiguration Configuration, IAccountSettings account)
+        public AccountController(AccountService settings)
         {
-            this.Configuration = Configuration;
-            crypt = new CryptoService(Configuration, account);
-            db = new StormContext(Configuration);
+            this.settings = settings;
         }
 
         public IActionResult Index()
@@ -33,55 +29,24 @@ namespace MovieStorm.Controllers
         [HttpPost]
         public IActionResult Login(string address, string password)
         {
-            string key = crypt.EncryptString(password);
-
-            var user = db.User.Where(u => u.address == address && u.password == password)
-                    .FirstOrDefault();
-
-            if (user == null) return Unauthorized(new { error = "Unauthorized access!" }); 
-            return Ok();
+            string token = settings.Login(address, password);
+            if (string.IsNullOrEmpty(token)) return Unauthorized(new { error = "Unauthorized access!" });
+            return Ok(new { token });
         }
 
         [HttpPost]
         public async Task<IActionResult> Signup(string username, string password, string address, IFormFile logo, bool admin)
         {
-            var exists = db.User.Where(u => u.username == username || u.address == address)
-                    .FirstOrDefault();
-
-            if (exists != null) return Unauthorized(new { error = "User already exists!" });
-            string url = "./Storage/profiles/user.png";
-
-            if(logo != null)
-            {
-                url = $"./Storage/profiles/{logo.FileName}";
-                var ms = new MemoryStream();
-                await logo.CopyToAsync(ms);
-                System.IO.File.WriteAllBytes(url, ms.ToArray());
-            }
-
-            var user = new User
-            {
-                username = username,
-                password = crypt.EncryptString(password),
-                address = address,
-                logo = url,
-                admin = admin
-            };
-
-            db.User.Add(user);
-            await db.SaveChangesAsync();
-            return Ok();
+            string token = await settings.Signup(username, password, address, logo, admin);
+            if (string.IsNullOrEmpty(token)) return Unauthorized(new { error = "User already exists!" });
+            return Ok(new { token });
         }
 
         [HttpPost]
         public IActionResult Recover(string address)
         {
-            var user = db.User.Where(u => u.address == address)
-                    .FirstOrDefault();
-
-            if (user == null) return NotFound(new { error = "There is no user with the specified email address." });
-            string password = crypt.DecryptString(user.password);
-            crypt.SendEmail(user.address, "Recover Password", $"Hi {user.username}!<br> Your password is <b style='color: #5f9ea0;'>{password}.</b><br>Have a nice day!");
+            bool ok = settings.Recover(address);
+            if (!ok) return NotFound(new { error = "There is no user with the specified email address." });
             return Ok(new { message = "Please check your email address!" });
         }
     }

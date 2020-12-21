@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MovieStorm.Services;
 
 namespace MovieStorm
 {
@@ -32,6 +33,8 @@ namespace MovieStorm
 
             services.AddSingleton<IAccountSettings>(sp =>
                 sp.GetRequiredService<IOptions<AccountSettings>>().Value);
+
+            services.AddSingleton<AccountService>();
             services.AddControllersWithViews();
         }
 

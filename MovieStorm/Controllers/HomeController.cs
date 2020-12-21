@@ -19,14 +19,12 @@ namespace MovieStorm.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration Configuration;
         private readonly StormContext db;
-        private readonly CryptoService crypt;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration Configuration, IAccountSettings setup)
+        public HomeController(ILogger<HomeController> logger, IConfiguration Configuration)
         {
             _logger = logger;
             this.Configuration = Configuration;
             db = new StormContext(Configuration);
-            crypt = new CryptoService(Configuration, setup);
         }
 
         public IActionResult GetLatest()
@@ -125,10 +123,9 @@ namespace MovieStorm.Controllers
             return File(buffer, $"image/{ext}");
         }
 
-        public IActionResult Watch(string m)
+        public IActionResult Watch(int id)
         {
-            var path = crypt.DecryptString(m);
-            return PhysicalFile($"{path}", "application/octet-stream", enableRangeProcessing: true);
+            return PhysicalFile($"{id}", "application/octet-stream", enableRangeProcessing: true);
         }
 
         [HttpPost]
