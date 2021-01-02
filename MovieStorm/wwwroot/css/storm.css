@@ -46,3 +46,47 @@
 .space {
     padding-bottom: 50px;
 }
+
+#model {
+    width: 85%;
+    margin-top: 50px;
+    margin-left: 100px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    width: 60vw;
+    max-width: 300px;
+    margin: 0 auto;
+    margin-right: 5%;
+    background-color: slateblue;
+    border-radius: 2px;
+    font-size: 1em;
+    line-height: 2.5em;
+    text-align: center;
+    color: white;
+}
+
+    label:hover {
+        background-color: cornflowerblue;
+    }
+
+    label:active {
+        background-color: mediumaquamarine;
+    }
+
+#apply {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+#lang {
+    width: 50%;
+}

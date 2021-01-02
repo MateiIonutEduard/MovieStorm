@@ -21,6 +21,8 @@ namespace MovieStorm.Data
 
         public DbSet<Review> Review { get; set; }
 
+        public DbSet<Subtitle> Subtitle { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL(Configuration.GetConnectionString("StormDB"));
@@ -57,6 +59,18 @@ namespace MovieStorm.Data
                     .WithMany(u => u.Movies);
 
                 entity.Property(m => m.path).IsRequired();
+            });
+
+            modelBuilder.Entity<Subtitle>(entity =>
+            {
+                entity.HasKey(s => s.Id);
+                entity.Property(s => s.code).IsRequired();
+
+                entity.Property(s => s.path).IsRequired();
+                entity.Property(s => s.movie_id).IsRequired();
+
+                entity.HasOne(s => s.Movie)
+                .WithMany(m => m.Subtitles);
             });
 
             modelBuilder.Entity<Review>(entity =>

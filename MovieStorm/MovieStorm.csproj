@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Folder Include="Storage\profiles\" />
+    <Folder Include="Storage\profiles\" />
   </ItemGroup>
 
 </Project>

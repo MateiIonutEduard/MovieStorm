@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "New Movie";
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/js/AddMovie.js"></script>
+<div class="jumbotron" id="model">
+    <h1> Upload Movie</h1>
+    <p> <b></b> </p> <br>
+    <form method="post" id="upform" enctype="multipart/form-data">
+
+        <input type="text" class="form-control" placeholder="Movie Title" name="name" id="name" value=""><br>
+        <input class="form-control" type="date" name="released" id="released" />
+        <br>
+        <input type="text" class="form-control" placeholder="genre" name="genre" id="released" value="">
+        <br>
+        <textarea rows="3" cols="40" name="description" id="description" class="form-control"></textarea>
+        <br>
+        <div class="row">
+            <div class="col">
+                <select class="form-control form-control-sm" id="lang" name="lang"></select>
+            </div>
+            <div class="col">
+                <label for="apply"><input type="file" name="files" id="apply" multiple><i class="fa fa-cloud" aria-hidden="true"></i>&nbsp; <b>Get files</b></label>
+            </div>
+        </div> <br><br>
+        <div class="signupbutton">
+            <input type="submit" class="btn btn-success btn-sm" id="upload" value="Upload" />&nbsp;&nbsp;
+            <input type="button" class="btn btn-danger btn-sm" id="cancel" value="Cancel" />
+        </div>
+    </form><br>
+    <div class="container-sm" style="padding-left: 20%; display: none;">
+        <div class="progress" style="width: 69%; height: 5px;">
+            <div class="progress-bar" style="width:0%; height:5px"></div>
+        </div>
+    </div>
+</div>

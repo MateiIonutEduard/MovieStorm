@@ -32,6 +32,9 @@ namespace MovieStorm.Data
         [ForeignKey("movie_id")]
         public ICollection<Review> Reviews { get; set; }
 
+        [ForeignKey("movie_id")]
+        public ICollection<Subtitle> Subtitles { get; set; }
+
         public string path { get; set; }
     }
 }

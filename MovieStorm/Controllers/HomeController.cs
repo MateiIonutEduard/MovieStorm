@@ -11,6 +11,7 @@ using MovieStorm.Models;
 using MovieStorm.Data;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using System.Text;
 
 namespace MovieStorm.Controllers
 {
@@ -25,6 +26,12 @@ namespace MovieStorm.Controllers
             _logger = logger;
             this.Configuration = Configuration;
             db = new StormContext(Configuration);
+        }
+
+        public IActionResult GetLangs()
+        {
+            byte[] data = System.IO.File.ReadAllBytes(@"./Storage/data.json");
+            return File(data, "application/json");
         }
 
         public IActionResult GetLatest()
@@ -128,23 +135,32 @@ namespace MovieStorm.Controllers
             return PhysicalFile($"{id}", "application/octet-stream", enableRangeProcessing: true);
         }
 
+        public IActionResult AddMovie()
+        {
+            return View();
+        }
+
         [HttpPost]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> AddMovie(string name, string genre, DateTime released, string description, IFormFile img, IFormFile buffer, int uid)
+        public async Task<IActionResult> AddMovie(string name, string genre, DateTime released, string description, IFormFile[] files, string lang)
         {
             var exists = db.Movie.Where(m => m.name == name)
                         .FirstOrDefault();
 
             if (exists != null) return Forbid();
-            if (img == null || buffer == null) return Forbid();
+            if (files.Length != 3) return Forbid();
 
-            var path = $"./Storage/{name}";
+            var path = $"./Storage/{Convert.ToBase64String(Encoding.UTF8.GetBytes(name))}";
             Directory.CreateDirectory(path);
 
-            FileStream fs = new FileStream($"{path}/{img.FileName}", FileMode.CreateNew);
+            var img = files.FirstOrDefault(n => n.ContentType.Contains("image/"));
+            var subtitle = files.FirstOrDefault(n => n.ContentType.Contains("application/octet-stream"));
+            var buffer = files.FirstOrDefault(n => n.ContentType.Contains("video/"));
+
+            FileStream fs = new FileStream($"{path}/{img.FileName}", FileMode.Create);
             await img.CopyToAsync(fs);
 
-            fs = new FileStream($"{path}/{buffer.FileName}", FileMode.CreateNew);
+            fs = new FileStream($"{path}/{buffer.FileName}", FileMode.Create);
             await buffer.CopyToAsync(fs);
 
             var movie = new Movie
@@ -154,11 +170,21 @@ namespace MovieStorm.Controllers
                 released = released,
                 description = description,
                 preview = $"{path}/{img.FileName}",
-                user_id = uid,
+                user_id = 2, // change by issuer
                 path = $"{path}/{buffer.FileName}"
             };
 
             db.Movie.Add(movie);
+            await db.SaveChangesAsync();
+
+            var transcribe = new Subtitle
+            {
+                code = lang,
+                path = $"{path}/{subtitle.FileName}",
+                movie_id = movie.Id
+            };
+
+            db.Subtitle.Add(transcribe);
             await db.SaveChangesAsync();
             return Ok();
         }
