@@ -122,6 +122,52 @@ namespace MovieStorm.Controllers
             }
         }
 
+        public IActionResult GetGenre(int id)
+        {
+            var model = db.Movie.FirstOrDefault(m => m.Id == id);
+            var list = db.Movie.Where(m => m.genre == model.genre);
+
+            var count = list.Count();
+            if (count > 4)
+            {
+                int i = count - 4, j = count;
+
+                var movies = (from movie in list
+                              orderby movie.name ascending
+                              where movie.Id >= i && movie.Id <= j
+                              let likes = db.Review.Where(r => r.movie_id == movie.Id)
+                              select new
+                              {
+                                  id = movie.Id,
+                                  name = movie.name,
+                                  preview = movie.preview,
+                                  rating = (likes.Count() != 0) ? likes.Average(v => v.rating) : 0
+                              }).ToList();
+
+                return Json(movies);
+            }
+            else
+            {
+                var movies = (from movie in list
+                              orderby movie.name ascending
+                              let likes = db.Review.Where(r => r.movie_id == movie.Id)
+                              select new
+                              {
+                                  id = movie.Id,
+                                  name = movie.name,
+                                  preview = movie.preview,
+                                  rating = (likes.Count() != 0) ? likes.Average(v => v.rating) : 0
+                              }).ToList();
+
+                return Json(movies);
+            }
+        }
+
+        public IActionResult WatchMovie()
+        {
+            return View();
+        }
+
         public IActionResult Show(string path)
         {
             int index = path.LastIndexOf('.');
@@ -132,7 +178,23 @@ namespace MovieStorm.Controllers
 
         public IActionResult Watch(int id)
         {
-            return PhysicalFile($"{id}", "application/octet-stream", enableRangeProcessing: true);
+            var movie = db.Movie.FirstOrDefault(m => m.Id == id);
+            var path = Path.GetFullPath(movie.path);
+            return PhysicalFile($"{path}", "application/octet-stream", enableRangeProcessing: true);
+        }
+
+        public IActionResult NameOf(int id)
+        {
+            var movie = db.Movie.FirstOrDefault(m => m.Id == id);
+            return Json(new { name = movie.name, details = movie.description});
+        }
+
+        public IActionResult Transcribe(int id)
+        {
+            var subtitle = db.Subtitle.FirstOrDefault(t => t.movie_id == id);
+            var path = Path.GetFullPath(subtitle.path);
+            byte[] buffer = System.IO.File.ReadAllBytes(path);
+            return File(buffer, "text/vtt");
         }
 
         public IActionResult AddMovie()
@@ -162,6 +224,9 @@ namespace MovieStorm.Controllers
 
             fs = new FileStream($"{path}/{buffer.FileName}", FileMode.Create);
             await buffer.CopyToAsync(fs);
+
+            fs = new FileStream($"{path}/{subtitle.FileName}", FileMode.Create);
+            await subtitle.CopyToAsync(fs);
 
             var movie = new Movie
             {
