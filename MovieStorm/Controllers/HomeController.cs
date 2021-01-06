@@ -186,7 +186,18 @@ namespace MovieStorm.Controllers
         public IActionResult NameOf(int id)
         {
             var movie = db.Movie.FirstOrDefault(m => m.Id == id);
-            return Json(new { name = movie.name, details = movie.description});
+            var likes = db.Review.Where(r => r.movie_id == movie.Id);
+            var rating = (likes.Count() != 0) ? likes.Average(v => v.rating) : 0;
+            return Json(new { name = movie.name, details = movie.description, rating });
+        }
+
+        public IActionResult GetReviews(int id)
+        {
+            var reviews = (from r in db.Review.ToList()
+                           join u in db.User.ToList() on r.user_id equals u.Id
+                           where r.movie_id == id
+                           select new { id = r.Id, r.rating, post = r.content, u.username });
+            return Json(reviews);
         }
 
         public IActionResult Transcribe(int id)

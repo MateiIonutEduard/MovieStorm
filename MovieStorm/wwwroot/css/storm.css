@@ -91,8 +91,27 @@ label {
     width: 50%;
 }
 
-textarea {
+#texid {
     background-color: #1C1C1C;
     border: hidden;
     color: white;
+}
+
+#sendit {
+    background-color: #1C1C1C;
+    width: 50%;
+    color: white;
+}
+
+.checked {
+    color: orange;
+}
+
+.fa-star:hover {
+    color: orange;
+}
+
+#sender:hover {
+    opacity: 0.8;
+    font-size: 18px;
 }

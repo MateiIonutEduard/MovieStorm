@@ -6,7 +6,12 @@
     var client = new HttpClient();
     var response = await client.GetAsync($"https://localhost:44333/Home/NameOf/?id={id}");
     var str = await response.Content.ReadAsStringAsync();
+    response = await client.GetAsync($"https://localhost:44333/Home/GetReviews/?id={id}");
     dynamic obj = JsonConvert.DeserializeObject(str);
+    str = await response.Content.ReadAsStringAsync();
+    dynamic posts = JsonConvert.DeserializeObject(str);
+    var rating = (int)obj.rating;
+    var rate = obj.rating;
 }
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="~/js/Watch.js"></script>
@@ -20,7 +25,7 @@
             <track kind="subtitles" srclang="ro" type="application/octet-stream" label="Romanian" src="/Home/Transcribe/?id=@id" default>
         </video>
         <hr />
-        <textarea disabled rows="3" cols="60">@obj.details</textarea>
+        <textarea id="texid" disabled rows="8" cols="60">@obj.details</textarea>
     </div>
     <div class="jumbotron" style="background-color:#1C1C1C;">
         <h2 style='margin-top:0px;padding-top:0px;color:white;'>Same Genre</h2>
@@ -30,4 +35,45 @@
             -->
         </div>
     </div>
+    <span class="heading" style="color: white;">Movie Rating&nbsp;&nbsp;&nbsp;</span>
+    @for (int i = 1; i <= rating; i++)
+    {
+        <span class="fa fa-star checked"></span>
+    }
+    @for (int j = rating + 1; j <= 5; j++)
+    {
+        <span class="fa fa-star"></span>
+    }
+    &nbsp;&nbsp;<strong class="text-info">@rate</strong>
+    <hr style="border:1px solid #f1f1f1">
+    <table class="table table-dark table-hover">
+        <tbody>
+            @foreach (dynamic post in posts)
+            {
+                <tr>
+                    <td>@post.username</td>
+                    <td>@post.post</td>
+                    <td>
+                        @{
+                            var len = int.Parse(post.rating.ToString());
+                            var stars = (double)len;
+                        }
+                        @stars&nbsp;&nbsp;&nbsp;
+                        @for (int i = 1; i <= len; i++)
+                        {
+                            <span class="fa fa-star checked"></span>
+                        }
+                        @for (int i = len + 1; i <= 5; i++)
+                        {
+                            <span class="fa fa-star"></span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table><br>
+    <form class="form-inline" method="post">
+        <input type="text" style="width: 50%;" class="form-control form-control-sm" id="data" placeholder="Write Comment..."/>&nbsp;&nbsp;
+        <span class="fa fa-send text-info" id="sender"></span>
+    </form><br>
 </section>

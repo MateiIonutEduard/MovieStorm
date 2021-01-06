@@ -14,7 +14,7 @@
                 var noob = `<div class='noob'>${name}</div>`;
 
                 var col = `<div class='col'>${img}${noob}</div>`
-                var form = `<form action='movie.php' method='post'>${col}</form>`;
+                var form = `<form action='/Home/WatchMovie/?id=${data[i].id}' method='post'>${col}</form>`;
                 $("#news").append(form);
             }
         },
@@ -38,7 +38,7 @@
                 var noob = `<div class='noob'>${name}</div>`;
 
                 var col = `<div class='col'>${img}${noob}</div>`
-                var form = `<form action='movie.php' method='post'>${col}</form>`;
+                var form = `<form action='/Home/WatchMovie/?id=${data[i].id}' method='post'>${col}</form>`;
                 str = str.concat(form);
 
                 if (j % 4 == 0 && i < data.length) {
