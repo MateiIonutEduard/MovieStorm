@@ -270,6 +270,29 @@ namespace MovieStorm.Controllers
             return View();
         }
 
+        public IActionResult Results()
+        {
+            return View();
+        }
+
+        public IActionResult FindResults(string name)
+        {
+            var list = (from movie in db.Movie.ToList()
+                        orderby movie.name ascending
+                        where movie.name.Contains(name)
+                        let likes = db.Review.Where(r => r.movie_id == movie.Id)
+                        select new
+                        {
+                            id = movie.Id,
+                            movie.name,
+                            movie.preview,
+                            movie.views,
+                            rating = (likes.Count() != 0) ? likes.Average(v => v.rating) : 0
+                        }).ToList();
+
+            return Json(list);
+        }
+
         public IActionResult Privacy()
         {
             return View();

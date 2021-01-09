@@ -39,9 +39,9 @@
                     </ul>
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <form class="form-inline my-2 my-sm-0">
-                                <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                                <button class="btn btn-success my-2 my-sm-0" type="button">Find</button>
+                            <form id="results" class="form-inline my-2 my-sm-0" method="get">
+                                <input class="form-control mr-sm-2" id="name" type="text" placeholder="Search">
+                                <button class="btn btn-success my-2 my-sm-0" id="find" type="submit">Find</button>
                             </form>
                         </li>
                         <li class="nav-item dropdown">
@@ -70,6 +70,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/storm.js"></script>
     <script src="~/js/index.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

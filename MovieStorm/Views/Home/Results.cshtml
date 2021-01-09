@@ -1,0 +1,60 @@
+﻿@using System.Net.Http
+@using Newtonsoft.Json
+@{
+    ViewData["Title"] = "All Results";
+    var client = new HttpClient();
+    var Request = Html.ViewContext.HttpContext.Request;
+    var str = Request.Query["name"].ToString();
+    var response = await client.GetAsync($"https://localhost:44333/Home/FindResults/?name={str}");
+    var content = await response.Content.ReadAsStringAsync();
+    dynamic obj = JsonConvert.DeserializeObject(content);
+}
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/js/Results.js"></script>
+<section>
+    <div class="space">
+    </div>
+    <h2 style='margin-top:0px;padding-top:0px;color:white;'>All Results</h2>
+    @if (obj.Count > 0)
+    {
+        <div class="list-group">
+            @foreach (var field in obj)
+            {
+                <a style="color: white;" href="/Home/WatchMovie/?id=@field.id" class="list-group-item list-group-item-action bg-dark text-white" aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">@field.name</h5>
+                        <small>
+                            @{
+                                var len = (int)field.rating;
+                                var stars = field.rating;
+                            }
+                            @for (int i = 1; i <= len; i++)
+                            {
+                                <span class="fa fa-star checked"></span>
+                            }
+                            @for (int j = len + 1; j <= 5; j++)
+                            {
+                                <span class="fa fa-star"></span>
+                            }
+                        </small>
+                    </div>
+                    <img src="/Home/Show/?path=@field.preview" height="75" width="60" style="margin-top: 30px;margin-left:30px;margin-right:20px;" /><br>
+                    <small style="padding-left: 95%;" class="text-info">@stars</small>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+    <strong class="text-danger">There are no results for your search!</strong>
+    }
+    <div class="jumbotron" style="background-color:#1C1C1C;">
+        <h2 style='margin-top:0px;padding-top:0px;color:white;'>Best Movies</h2>
+        <div class="row" id="last">
+            <!--
+                Show latest uploaded movies.
+            -->
+        </div>
+    </div>
+</section>
