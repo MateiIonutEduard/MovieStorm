@@ -10,9 +10,28 @@
         async: true
     });
 
+    function GetCookie(name) {
+        var nameEQ = name + '='
+        var ca = document.cookie.split(';')
+
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i]
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1, c.length)
+            }
+            if (c.indexOf(nameEQ) === 0) {
+                return c.substring(nameEQ.length, c.length)
+            }
+        }
+
+        return null
+    }
+
     $(document).on('submit', '#upform', function (e) {
         e.preventDefault();
         var buffer = new FormData(this);
+        var cookie = document.cookie;
+        var token = GetCookie(cookie);
         
         $.ajax({
             url: '/Home/AddMovie/',
@@ -38,6 +57,9 @@
             beforeSend: function () {
                 $('.container-sm').css('display', 'block');
                 $('.progress-bar').width("0%");
+            },
+            headers: {
+                "Authorization": `Bearer ${token}`
             },
             success: function (data) {
                 $('.progress-bar').width('0%');

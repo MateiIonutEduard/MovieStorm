@@ -9,6 +9,7 @@ using MovieStorm.Services;
 using MovieStorm.Data;
 using MovieStorm.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieStorm.Controllers
 {
@@ -27,9 +28,9 @@ namespace MovieStorm.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string address, string password)
+        public async Task<IActionResult> Login(string address, string password)
         {
-            string token = settings.Login(address, password);
+            string token = await settings.Login(address, password);
             if (string.IsNullOrEmpty(token)) return Unauthorized(new { error = "Unauthorized access!" });
             return Ok(new { token });
         }

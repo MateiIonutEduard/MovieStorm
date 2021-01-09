@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,8 +12,7 @@ using MovieStorm.Services;
 using MovieStorm.Models;
 using MovieStorm.Data;
 using Microsoft.AspNetCore.Http;
-using System.IO;
-using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieStorm.Controllers
 {
@@ -215,6 +216,7 @@ namespace MovieStorm.Controllers
 
         [HttpPost]
         [DisableRequestSizeLimit]
+        [Authorize]
         public async Task<IActionResult> AddMovie(string name, string genre, DateTime released, string description, IFormFile[] files, string lang)
         {
             var exists = db.Movie.Where(m => m.name == name)
@@ -239,30 +241,38 @@ namespace MovieStorm.Controllers
             fs = new FileStream($"{path}/{subtitle.FileName}", FileMode.Create);
             await subtitle.CopyToAsync(fs);
 
-            var movie = new Movie
+            var token = HttpContext.Request.Cookies["token"];
+            var user = db.User.FirstOrDefault(u => u.token == token);
+
+            if (user != null && user.admin)
             {
-                name = name,
-                genre = genre,
-                released = released,
-                description = description,
-                preview = $"{path}/{img.FileName}",
-                user_id = 2, // change by issuer
-                path = $"{path}/{buffer.FileName}"
-            };
+                var movie = new Movie
+                {
+                    name = name,
+                    genre = genre,
+                    released = released,
+                    description = description,
+                    preview = $"{path}/{img.FileName}",
+                    user_id = user.Id,
+                    path = $"{path}/{buffer.FileName}"
+                };
 
-            db.Movie.Add(movie);
-            await db.SaveChangesAsync();
+                db.Movie.Add(movie);
+                await db.SaveChangesAsync();
 
-            var transcribe = new Subtitle
-            {
-                code = lang,
-                path = $"{path}/{subtitle.FileName}",
-                movie_id = movie.Id
-            };
+                var transcribe = new Subtitle
+                {
+                    code = lang,
+                    path = $"{path}/{subtitle.FileName}",
+                    movie_id = movie.Id
+                };
 
-            db.Subtitle.Add(transcribe);
-            await db.SaveChangesAsync();
-            return Ok();
+                db.Subtitle.Add(transcribe);
+                await db.SaveChangesAsync();
+                return Ok();
+            }
+            else
+                return Forbid();
         }
 
         public IActionResult Index()

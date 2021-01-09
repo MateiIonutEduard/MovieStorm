@@ -32,7 +32,7 @@ namespace MovieStorm.Services
             this.setup = setup;
         }
 
-        public string Login(string address, string password)
+        public async Task<string> Login(string address, string password)
         {
             string key = EncryptString(password);
 
@@ -40,7 +40,11 @@ namespace MovieStorm.Services
                     .FirstOrDefault();
 
             if (user == null) return string.Empty;
-            return GenToken(user);
+            var token = GenToken(user);
+
+            user.token = token;
+            await db.SaveChangesAsync();
+            return token;
         }
 
         public async Task<string> Signup(string username, string password, string address, IFormFile logo, bool admin)
@@ -70,7 +74,12 @@ namespace MovieStorm.Services
 
             db.User.Add(user);
             await db.SaveChangesAsync();
-            return GenToken(user);
+
+            var token = GenToken(user);
+            user.token = token;
+
+            await db.SaveChangesAsync();
+            return token;
         }
 
         private string GenToken(User user)
@@ -82,9 +91,8 @@ namespace MovieStorm.Services
               Configuration["JwtSettings:Audience"],
               new Claim[] {
                   new Claim("email", user.address),
-                  new Claim("grant", user.admin ? "1" : "0")
+                  new Claim("admin", user.admin ? "true" : "false")
               },
-              expires: DateTime.Now.AddMinutes(2),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
