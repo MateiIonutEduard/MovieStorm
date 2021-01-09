@@ -10,6 +10,9 @@ using System.Net;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace MovieStorm.Services
 {
@@ -37,7 +40,7 @@ namespace MovieStorm.Services
                     .FirstOrDefault();
 
             if (user == null) return string.Empty;
-            return null;
+            return GenToken(user);
         }
 
         public async Task<string> Signup(string username, string password, string address, IFormFile logo, bool admin)
@@ -67,7 +70,24 @@ namespace MovieStorm.Services
 
             db.User.Add(user);
             await db.SaveChangesAsync();
-            return null;
+            return GenToken(user);
+        }
+
+        private string GenToken(User user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSettings:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(Configuration["JwtSettings:Issuer"],
+              Configuration["JwtSettings:Audience"],
+              new Claim[] {
+                  new Claim("email", user.address),
+                  new Claim("grant", user.admin ? "1" : "0")
+              },
+              expires: DateTime.Now.AddMinutes(2),
+              signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public bool Recover(string address)
