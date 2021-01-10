@@ -10,28 +10,26 @@
         async: true
     });
 
-    function GetCookie(name) {
-        var nameEQ = name + '='
-        var ca = document.cookie.split(';')
-
+    function GetCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
         for (var i = 0; i < ca.length; i++) {
-            var c = ca[i]
-            while (c.charAt(0) === ' ') {
-                c = c.substring(1, c.length)
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
             }
-            if (c.indexOf(nameEQ) === 0) {
-                return c.substring(nameEQ.length, c.length)
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
             }
         }
-
-        return null
+        return "";
     }
 
     $(document).on('submit', '#upform', function (e) {
         e.preventDefault();
         var buffer = new FormData(this);
-        var cookie = document.cookie;
-        var token = GetCookie(cookie);
+        var token = GetCookie('token');
         
         $.ajax({
             url: '/Home/AddMovie/',

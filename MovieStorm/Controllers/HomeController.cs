@@ -214,9 +214,8 @@ namespace MovieStorm.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         [DisableRequestSizeLimit]
-        [Authorize]
         public async Task<IActionResult> AddMovie(string name, string genre, DateTime released, string description, IFormFile[] files, string lang)
         {
             var exists = db.Movie.Where(m => m.name == name)
@@ -229,7 +228,7 @@ namespace MovieStorm.Controllers
             Directory.CreateDirectory(path);
 
             var img = files.FirstOrDefault(n => n.ContentType.Contains("image/"));
-            var subtitle = files.FirstOrDefault(n => n.ContentType.Contains("application/octet-stream"));
+            var subtitle = files.FirstOrDefault(n => n.ContentType.Contains("text/vtt"));
             var buffer = files.FirstOrDefault(n => n.ContentType.Contains("video/"));
 
             FileStream fs = new FileStream($"{path}/{img.FileName}", FileMode.Create);

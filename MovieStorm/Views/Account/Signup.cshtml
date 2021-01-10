@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewData["Title"] = "Signup Page";
+    Layout = "~/Views/Account/AccountLayout.cshtml";
+}
+
+<br><br>
+<div class="row">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+            <div class="card-body">
+                <h5 class="card-title text-center"><b>Sign Up</b></h5>
+                <form class="form-signin">
+                    <div class="form-label-group">
+                        <input type="text" id="name" class="form-control" placeholder="Username" required autofocus>
+                    </div>
+                    <div class="form-label-group">
+                        <input type="text" id="pass" class="form-control" placeholder="Password" required autofocus>
+                    </div>
+                    <div class="form-label-group">
+                        <input type="email" id="address" class="form-control" placeholder="Address..." required>
+                    </div>
+                    <div class="form-label-group">
+                        <input type="file" id="logo" class="form-control" />
+                    </div>
+                    <div class="custom-control custom-checkbox mb-3">
+                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                        <label class="custom-control-label" for="customCheck1">Are you admin?</label>
+                    </div>
+                    <button class="btn btn-sm btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+                    <a class="btn btn-sm btn-dark btn-block text-uppercase" href="/Account/Login" type="button">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

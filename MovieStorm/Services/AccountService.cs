@@ -82,6 +82,16 @@ namespace MovieStorm.Services
             return token;
         }
 
+        public async Task<string> RefreshToken(string token)
+        {
+            var user = db.User.FirstOrDefault(u => u.token == token);
+            var refresh_token = GenToken(user);
+            user.token = refresh_token;
+
+            await db.SaveChangesAsync();
+            return refresh_token;
+        }
+
         private string GenToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSettings:Key"]));
@@ -93,6 +103,7 @@ namespace MovieStorm.Services
                   new Claim("email", user.address),
                   new Claim("admin", user.admin ? "true" : "false")
               },
+              expires: DateTime.Now.AddMinutes(2),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

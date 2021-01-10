@@ -22,7 +22,17 @@ namespace MovieStorm.Controllers
             this.settings = settings;
         }
 
-        public IActionResult Index()
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult Signup()
+        {
+            return View();
+        }
+
+        public IActionResult Recover()
         {
             return View();
         }
@@ -32,6 +42,7 @@ namespace MovieStorm.Controllers
         {
             string token = await settings.Login(address, password);
             if (string.IsNullOrEmpty(token)) return Unauthorized(new { error = "Unauthorized access!" });
+            Response.Cookies.Append("token", token);
             return Ok(new { token });
         }
 
@@ -40,7 +51,17 @@ namespace MovieStorm.Controllers
         {
             string token = await settings.Signup(username, password, address, logo, admin);
             if (string.IsNullOrEmpty(token)) return Unauthorized(new { error = "User already exists!" });
+            Response.Cookies.Append("token", token);
             return Ok(new { token });
+        }
+
+        [HttpPost, Authorize]
+        public async Task<IActionResult> RefreshToken(string token)
+        {
+            string newToken = await settings.RefreshToken(token);
+            Response.Cookies.Delete("token");
+            Response.Cookies.Append("token", newToken);
+            return Ok();
         }
 
         [HttpPost]
