@@ -1,14 +1,13 @@
 ﻿$(document).ready(() => {
     $(document).on("submit", "#signup", (e) => {
         e.preventDefault();
-        
-        var buffer = {
-            'username': $("#name").val(),
-            'password': $("#pass").val(),
-            'address': $("#address").val(),
-            'logo': $('#logo').get(0).files[0],
-            'admin': $('#admin').val()
-        };
+        var buffer = new FormData();
+        buffer.append('username', $("#name").val());
+        buffer.append('password', $("#pass").val());
+        buffer.append('address', $("#address").val());
+
+        buffer.append('logo', $('#logo').get(0).files[0]);
+        buffer.append('admin', $('#admin').val());
 
         $.ajax({
             url: '/Account/Signup',
