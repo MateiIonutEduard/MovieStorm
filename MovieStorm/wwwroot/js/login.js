@@ -16,6 +16,11 @@
                     location.href = '/Home/Index';
                 }, 1000);
             },
+            error: () => {
+                setTimeout(() => {
+                    location.href = '/Account/Recover';
+                }, 1000);
+            },
             async: true
         });
     });
