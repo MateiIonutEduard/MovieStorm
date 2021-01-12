@@ -56,13 +56,10 @@ namespace MovieStorm.Controllers
         }
 
         [HttpPost, Authorize]
-        public async Task<IActionResult> RefreshToken()
+        public async Task<IActionResult> RefreshToken(string token)
         {
-            string token = Request.Cookies["token"];
             string newToken = await settings.RefreshToken(token);
-            Response.Cookies.Delete("token");
-            Response.Cookies.Append("token", newToken);
-            return Ok();
+            return Ok(new { token = newToken });
         }
 
         [Authorize]

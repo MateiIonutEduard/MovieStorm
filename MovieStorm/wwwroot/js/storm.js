@@ -21,6 +21,8 @@
         return "";
     }
 
+    var token = GetCookie('token');
+
     setInterval(() => {
         $.ajax({
             url: '/Account/RefreshToken/',
@@ -30,6 +32,9 @@
             },
             headers: {
                 "Authorization": `Bearer ${token}`
+            },
+            success: data => {
+                document.cookie = `token=${data.token};path=/`;
             },
             async: true
         });
