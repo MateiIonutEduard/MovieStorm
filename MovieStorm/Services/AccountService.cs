@@ -109,6 +109,17 @@ namespace MovieStorm.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public dynamic About(string token)
+        {
+            var user = db.User.FirstOrDefault(u => u.token == token);
+            return new
+            {
+                user.username,
+                path = user.logo,
+                user.admin
+            };
+        }
+
         public bool Recover(string address)
         {
             var user = db.User.Where(u => u.address == address)

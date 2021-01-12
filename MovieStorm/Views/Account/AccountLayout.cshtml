@@ -1,17 +1,19 @@
-﻿<!DOCTYPE html>
-
-<html>
+﻿
+<!doctype html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/favicon.ico">
+
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="~/css/account.css" />
+    <link href="/css/account.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container-fluid">
-        @RenderBody()
-    </div>
+
+<body class="text-center">
+    @RenderBody()
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @RenderSection("Scripts", required: false)

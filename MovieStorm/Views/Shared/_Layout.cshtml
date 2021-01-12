@@ -44,16 +44,52 @@
                                 <button class="btn btn-success my-2 my-sm-0" id="find" type="submit">Find</button>
                             </form>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                                My Account
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/Home/AddMovie">Add Movie</a>
-                                <a class="dropdown-item" href="#">My Activity</a>
-                                <a class="dropdown-item" href="#">Sign out</a>
-                            </div>
-                        </li>
+                        @using System.Net.Http
+                        @using System.Net.Http.Headers
+                        @using Newtonsoft.Json
+                        @{
+                            bool admin = false;
+                            string token = Html.ViewContext.HttpContext.Request.Cookies["token"];
+                            dynamic obj = null;
+
+                            if (!string.IsNullOrEmpty(token)) {
+                                var client = new HttpClient();
+                                var request = new HttpRequestMessage
+                                {
+                                    Method = HttpMethod.Get,
+                                    RequestUri = new Uri($"https://localhost:44333/Account/About/?token={token}"),
+                                    Headers =
+                                    {
+                                        { "Authorization", $"Bearer {token}" }
+                                    }
+                                };
+
+                                var response = await client.SendAsync(request);
+                                var data = await response.Content.ReadAsStringAsync();
+                                obj = JsonConvert.DeserializeObject(data);
+                                admin = bool.Parse(obj.admin.ToString());
+                            }
+                        }
+                        @if (!string.IsNullOrEmpty(token))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                                    <img src="/Account/Show" width="32" height="32" class="rounded-circle" alt="My Profile">&nbsp;@obj.username
+                                </a>
+                                <div class="dropdown-menu">
+                                    @if (admin)
+                                    {
+                                        <a class="dropdown-item" href="/Home/AddMovie">Add Movie</a>
+                                        <a class="dropdown-item" href="#">My Activity</a>
+                                        <a class="dropdown-item" href="/Account/Signout">Sign out</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="dropdown-item" href="/Account/Signout">Sign out</a>
+                                    }
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

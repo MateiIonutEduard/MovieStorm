@@ -7,33 +7,22 @@
 <br><br>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="~/js/signup.js"></script>
-<div class="row">
-    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-        <div class="card card-signin my-5">
-            <div class="card-body">
-                <h5 class="card-title text-center"><b>Sign Up</b></h5>
-                <form class="form-signin" id="signup" enctype="multipart/form-data" method="post">
-                    <div class="form-label-group">
-                        <input type="text" id="name" class="form-control" placeholder="Username" required autofocus>
-                    </div>
-                    <div class="form-label-group">
-                        <input type="password" id="pass" class="form-control" placeholder="Password" required autofocus>
-                    </div>
-                    <div class="form-label-group">
-                        <input type="email" id="address" class="form-control" placeholder="Address..." required>
-                    </div>
-                    <div class="form-label-group">
-                        <input type="file" id="logo" class="form-control" />
-                    </div>
-                    <div class="custom-control custom-checkbox mb-3">
-                        <input type="checkbox" class="custom-control-input" id="admin">
-                        <label class="custom-control-label" for="customCheck1">Are you admin?</label>
-                    </div>
-                    <button class="btn btn-sm btn-primary btn-block text-uppercase" type="submit">Sign in</button>
-                    <a class="btn btn-sm btn-dark btn-block text-uppercase" href="/Account/Login" type="button">Back</a>
-                </form>
-            </div>
-        </div>
+<form class="form-signup" id="signup" method="post">
+    <img class="mb-4" src="/images/storm.png" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Register Account</h1>
+    <label for="name" class="sr-only">Username</label>
+    <input type="text" id="name" class="form-control" placeholder="Username" required autofocus>
+    <label for="pass" class="sr-only">Password</label>
+    <input type="password" id="pass" class="form-control" placeholder="Password" required>
+    <label for="address" class="sr-only">Email address</label>
+    <input type="email" id="address" class="form-control" placeholder="Email address" required autofocus><br>
+    <label id="sel" for="logo"><input type="file" id="logo" /><i class="fa fa-image text-info" aria-hidden="true"></i>&nbsp;Choose Image</label>
+    <div class="checkbox mb-3">
+        <label>
+            <input type="checkbox" id="admin" value=""> Admin account?
+        </label>
     </div>
-</div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+    <p class="mt-5 mb-3 text-muted">&copy; 2021</p>
+</form>
 

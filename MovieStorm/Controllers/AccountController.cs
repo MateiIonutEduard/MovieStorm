@@ -43,7 +43,7 @@ namespace MovieStorm.Controllers
             string token = await settings.Login(address, password);
             if (string.IsNullOrEmpty(token)) return Unauthorized(new { error = "Unauthorized access!" });
             Response.Cookies.Append("token", token);
-            return Ok(new { token });
+            return Ok();
         }
 
         [HttpPost]
@@ -52,16 +52,41 @@ namespace MovieStorm.Controllers
             string token = await settings.Signup(username, password, address, logo, admin);
             if (string.IsNullOrEmpty(token)) return Unauthorized(new { error = "User already exists!" });
             Response.Cookies.Append("token", token);
-            return Ok(new { token });
+            return Ok();
         }
 
         [HttpPost, Authorize]
-        public async Task<IActionResult> RefreshToken(string token)
+        public async Task<IActionResult> RefreshToken()
         {
+            string token = Request.Cookies["token"];
             string newToken = await settings.RefreshToken(token);
             Response.Cookies.Delete("token");
             Response.Cookies.Append("token", newToken);
             return Ok();
+        }
+
+        [Authorize]
+        public IActionResult About(string token)
+        {
+            var data = settings.About(token);
+            return Json(data);
+        }
+
+        public IActionResult Show()
+        {
+            var token = Request.Cookies["token"];
+            var data = settings.About(token);
+            int index = data.path.LastIndexOf('.');
+
+            string ext = data.path.Substring(index + 1);
+            byte[] buffer = System.IO.File.ReadAllBytes(data.path);
+            return File(buffer, $"image/{ext}");
+        }
+
+        public IActionResult Signout()
+        {
+            Response.Cookies.Delete("token");
+            return Redirect("/Account/Login");
         }
 
         [HttpPost]
