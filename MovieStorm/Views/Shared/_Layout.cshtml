@@ -52,14 +52,15 @@
                             string token = Html.ViewContext.HttpContext.Request.Cookies["token"];
                             dynamic obj = null;
 
-                            if (!string.IsNullOrEmpty(token)) {
+                            if (!string.IsNullOrEmpty(token))
+                            {
                                 var client = new HttpClient();
                                 var request = new HttpRequestMessage
                                 {
                                     Method = HttpMethod.Get,
                                     RequestUri = new Uri($"https://localhost:44333/Account/About/?token={token}"),
                                     Headers =
-                                    {
+                                                                    {
                                         { "Authorization", $"Bearer {token}" }
                                     }
                                 };
@@ -87,6 +88,20 @@
                                     {
                                         <a class="dropdown-item" href="/Account/Signout">Sign out</a>
                                     }
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <div class="row">
+                                    <div class="span6">
+                                        <a class="nav-link text-light" asp-controller="Account" asp-action="Login">Log In</a>
+                                    </div>
+                                    <div class="vertical-divider text-primary">or</div>
+                                    <div class="span6">
+                                        <a class="nav-link text-light" asp-controller="Account" asp-action="Signup">Sign Up</a>
+                                    </div>
                                 </div>
                             </li>
                         }
