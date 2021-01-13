@@ -10,6 +10,23 @@
     dynamic obj = JsonConvert.DeserializeObject(str);
     str = await response.Content.ReadAsStringAsync();
     dynamic posts = JsonConvert.DeserializeObject(str);
+
+    var token = Html.ViewContext.HttpContext.Request.Cookies["token"];
+    var request = new HttpRequestMessage
+    {
+        RequestUri = new Uri($"https://localhost:44333/Home/HasRating/?id={id}"),
+        Method = HttpMethod.Get,
+        Headers =
+        {
+            { "Authorization", $"Bearer {token}"}
+        }
+    };
+
+    response = await client.SendAsync(request);
+    str = await response.Content.ReadAsStringAsync();
+    dynamic temp = JsonConvert.DeserializeObject(str);
+    bool valid = bool.Parse(temp.valid.ToString());
+
     var rating = (int)obj.rating;
     var rate = obj.rating;
 }
@@ -72,8 +89,16 @@
             }
         </tbody>
     </table><br>
-    <form class="form-inline" method="post">
-        <input type="text" style="width: 50%;" class="form-control form-control-sm" id="data" placeholder="Write Comment..." />&nbsp;&nbsp;
-        <button class="btn btn-dark btn-circle btn-sm" type="submit"><span class="fa fa-send text-info" id="sender"></span></button>
-    </form><br>
+    @if (valid)
+    {
+        <form class="form-inline" id="rating" method="post">
+            <input type="text" style="width: 50%;" class="form-control form-control-sm" id="data" placeholder="Write Comment..." />&nbsp;&nbsp;
+            <span class="fa fa-star" id="star1" onmouseover="OnHover(1)" onclick="SetRating(1)"></span>
+            <span class="fa fa-star" id="star2" onmouseover="OnHover(2)" onclick="SetRating(2)"></span>
+            <span class="fa fa-star" id="star3" onmouseover="OnHover(3)" onclick="SetRating(3)"></span>
+            <span class="fa fa-star" id="star4" onmouseover="OnHover(4)" onclick="SetRating(4)"></span>
+            <span class="fa fa-star" id="star5" onmouseover="OnHover(5)" onclick="SetRating(5)"></span>&nbsp;&nbsp;
+            <button class="btn btn-dark btn-circle btn-sm" id="send" type="submit"><span class="fa fa-send text-info" id="sender"></span></button>
+        </form><br>
+    }
 </section>

@@ -113,5 +113,8 @@ label {
 
 #sender:hover {
     opacity: 0.8;
-    font-size: 18px;
+}
+
+#send {
+    border-radius: 50%;
 }

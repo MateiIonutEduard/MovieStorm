@@ -302,6 +302,41 @@ namespace MovieStorm.Controllers
             return Json(list);
         }
 
+        [HttpPost, Authorize]
+        public async Task<IActionResult> Rate(int id, string comment, int count)
+        {
+            string header = HttpContext.Request.Headers["Authorization"];
+            string token = header.Split(' ')[1];
+
+            var user = db.User.FirstOrDefault(u => u.token == token);
+            var review = db.Review.FirstOrDefault(r => r.movie_id == id && r.user_id == user.Id);
+
+            if (review != null) return Forbid();
+
+            var post = new Review
+            {
+                content = comment,
+                rating = count,
+                movie_id = id,
+                user_id = user.Id
+            };
+
+            db.Review.Add(post);
+            await db.SaveChangesAsync();
+            return Ok();
+        }
+
+        [Authorize]
+        public IActionResult HasRating(int id)
+        {
+            string header = HttpContext.Request.Headers["Authorization"];
+            string token = header.Split(' ')[1];
+
+            var user = db.User.FirstOrDefault(u => u.token == token);
+            var review = db.Review.FirstOrDefault(r => r.movie_id == id && r.user_id == user.Id);
+            return Ok(new { valid = (review == null)});
+        }
+
         public IActionResult Privacy()
         {
             return View();
