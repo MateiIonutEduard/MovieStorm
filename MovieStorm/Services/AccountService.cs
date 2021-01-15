@@ -23,13 +23,13 @@ namespace MovieStorm.Services
         private readonly IConfiguration Configuration;
         private readonly IAccountSettings setup;
 
-        public AccountService(IConfiguration Configuration, IAccountSettings setup)
+        public AccountService(IConfiguration Configuration, StormContext db, IAccountSettings setup)
         {
             this.Configuration = Configuration;
             crypto_key = Convert.FromBase64String(this.Configuration["AppSettings:secret"]);
             salt = Convert.FromBase64String(this.Configuration["AppSettings:salt"]);
-            db = new StormContext(Configuration);
             this.setup = setup;
+            this.db = db;
         }
 
         public async Task<string> Login(string address, string password)

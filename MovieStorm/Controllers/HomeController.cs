@@ -22,11 +22,11 @@ namespace MovieStorm.Controllers
         private readonly IConfiguration Configuration;
         private readonly StormContext db;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration Configuration)
+        public HomeController(ILogger<HomeController> logger, StormContext _context, IConfiguration Configuration)
         {
             _logger = logger;
             this.Configuration = Configuration;
-            db = new StormContext(Configuration);
+            db = _context;
         }
 
         public IActionResult GetLangs()

@@ -31,13 +31,12 @@ namespace MovieStorm
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AccountSettings>(
-    Configuration.GetSection(nameof(AccountSettings)));
+            services.AddDbContext<StormContext>(options =>
+                options.UseMySQL(Configuration.GetConnectionString("StormDB")));
 
             services.AddSingleton<IAccountSettings>(sp =>
                 sp.GetRequiredService<IOptions<AccountSettings>>().Value);
 
-            services.AddSingleton<AccountService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
 {

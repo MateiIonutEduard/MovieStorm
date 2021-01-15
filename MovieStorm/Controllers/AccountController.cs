@@ -17,9 +17,9 @@ namespace MovieStorm.Controllers
     {
         private AccountService settings;
 
-        public AccountController(AccountService settings)
+        public AccountController(IConfiguration config, StormContext _context, IAccountSettings account)
         {
-            this.settings = settings;
+            settings = new AccountService(config, _context, account);
         }
 
         public IActionResult Login()

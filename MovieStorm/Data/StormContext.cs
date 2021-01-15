@@ -9,12 +9,9 @@ namespace MovieStorm.Data
 {
     public class StormContext : DbContext
     {
-        private readonly IConfiguration Configuration;
+        public StormContext(DbContextOptions<StormContext> options) : base(options)
+        { }
 
-        public StormContext(IConfiguration Configuration)
-        {
-            this.Configuration = Configuration;
-        }
         public DbSet<User> User { get; set; }
 
         public DbSet<Movie> Movie { get; set; }
@@ -22,11 +19,6 @@ namespace MovieStorm.Data
         public DbSet<Review> Review { get; set; }
 
         public DbSet<Subtitle> Subtitle { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseMySQL(Configuration.GetConnectionString("StormDB"));
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

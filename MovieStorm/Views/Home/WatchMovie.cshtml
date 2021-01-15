@@ -25,7 +25,15 @@
     response = await client.SendAsync(request);
     str = await response.Content.ReadAsStringAsync();
     dynamic temp = JsonConvert.DeserializeObject(str);
-    bool valid = bool.Parse(temp.valid.ToString());
+    bool valid = true;
+
+    try
+    {
+        valid = bool.Parse(temp.valid.ToString());
+    } catch(Exception)
+    {
+        valid = false;
+    }
 
     var rating = (int)obj.rating;
     var rate = obj.rating;
