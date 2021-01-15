@@ -337,6 +337,11 @@ namespace MovieStorm.Controllers
             return Ok(new { valid = (review == null)});
         }
 
+        public IActionResult UpdateProfile()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

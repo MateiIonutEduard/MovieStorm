@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Update Profile";
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/upkey.js"></script>
+<div class="jumbotron" id="upx">
+    <h1>Change Password</h1><br>
+    <div class="row">
+        <form method="put" id="upkey">
+            <div class="col-lg-12">
+                <input type="password" id="key" class="form-control" placeholder="New Password..." required autofocus /><br />
+                <input type="password" id="conf" class="form-control" placeholder="Confirm Password..." required /><br>
+                <div class="col-lg-12">
+                    <div class="row">
+                        <input type="submit" style="margin-left: 5%;" class="btn btn-success" value="Update" />
+                        <input type="button" style="margin-left: 10%;" onclick="location.href = '/Home/Index';" class="btn btn-outline-info" value="Cancel" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

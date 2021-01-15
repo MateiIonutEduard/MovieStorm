@@ -131,6 +131,16 @@ namespace MovieStorm.Services
             return true;
         }
 
+        public async Task<bool> UpdatePassword(string token, string key)
+        {
+            var user = db.User.FirstOrDefault(u => u.token == token);
+            if (user == null) return false;
+
+            user.password = EncryptString(key);
+            await db.SaveChangesAsync();
+            return true;
+        }
+
         public string EncryptString(string data)
         {
             using (var aes = Aes.Create())

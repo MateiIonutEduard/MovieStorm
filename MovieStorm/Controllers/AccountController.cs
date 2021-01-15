@@ -80,6 +80,18 @@ namespace MovieStorm.Controllers
             return File(buffer, $"image/{ext}");
         }
 
+        [HttpPut, Authorize]
+        public async Task<IActionResult> UpdatePassword(string key)
+        {
+            var header = HttpContext.Request.Headers["Authorization"].ToString();
+            var token = header.Split(' ')[1];
+
+            var done = await settings.UpdatePassword(token, key);
+            if (!done) return Unauthorized();
+
+            return Ok();
+        }
+
         public IActionResult Signout()
         {
             Response.Cookies.Delete("token");

@@ -54,6 +54,12 @@
     text-align: center;
 }
 
+#upx {
+    width: 50%;
+    margin-top: 50px;
+    margin-left: 25%;
+}
+
 label {
     display: block;
     width: 60vw;
@@ -117,4 +123,8 @@ label {
 
 #send {
     border-radius: 50%;
+}
+
+.danger::-webkit-input-placeholder {
+    color: red;
 }
